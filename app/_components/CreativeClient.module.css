@@ -492,6 +492,41 @@
   .tabCount { margin-left: 5px; font-size: 9.5px; padding: 1px 5px; }
 }
 
+/* ───────────────────── View More CTA (links to Drive archive) ───────────────────── */
+.viewMoreWrap {
+  display: flex;
+  justify-content: center;
+  padding: clamp(20px, 3vw, 36px) clamp(20px, 4vw, 40px) clamp(40px, 6vw, 72px);
+}
+.viewMoreBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 999px;
+  background: rgba(139, 92, 246, 0.10);
+  border: 1px solid rgba(139, 92, 246, 0.40);
+  color: var(--cf-fg);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: border-color 0.3s, background 0.3s, transform 0.25s, box-shadow 0.3s;
+}
+.viewMoreBtn:hover {
+  border-color: rgba(167, 139, 250, 0.7);
+  background: rgba(139, 92, 246, 0.20);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(139, 92, 246, 0.40);
+}
+.viewMoreBtn svg {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.viewMoreBtn:hover svg {
+  transform: translate(2px, -2px);
+}
+
 /* ───────────────────── Capabilities marquee (replaces client pills) ─────────────────────
    Two infinite scrolling rows — services on top going left, industries below
    going right. Edge gradients fade the pills out so they read as continuous. */

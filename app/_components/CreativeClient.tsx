@@ -150,6 +150,10 @@ const TABS: { key: TabKey; label: string }[] = [
   { key: 'ads',    label: 'Ad Creative'},
 ]
 
+/** Google Drive folder holding the full portfolio archive — wired to the
+   'View More' CTA below the short-form grid. */
+const VIEW_MORE_URL = 'https://drive.google.com/drive/folders/1L9Gn0wT-waDN9RP7STz9MalD6u24WeoJ?usp=drive_link'
+
 export default function CreativeClient() {
   const prefersReduced = useReducedMotion()
 
@@ -491,6 +495,19 @@ export default function CreativeClient() {
             />
           )
         })}
+      </div>
+
+      {/* View More — opens the full Drive archive in a new tab */}
+      <div className={styles.viewMoreWrap}>
+        <a
+          href={VIEW_MORE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.viewMoreBtn}
+        >
+          View More on Drive
+          <ArrowUpRight size={16} strokeWidth={2.5} />
+        </a>
       </div>
 
       {/* ─────────── Manifesto / transition band — bridges video → static ─────────── */}

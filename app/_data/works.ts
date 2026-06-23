@@ -174,6 +174,92 @@ export const WORKS: Work[] = [
       media: { type: 'video', src: '/media/visualizer.mp4' },
     },
   },
+
+  /* Redistributed to fill 4-per-bucket — Reels / Shorts / Ad Creative all = 4 */
+  {
+    id: 'dr-dheeraj-dubay',
+    client: 'Dr. Dheeraj Dubay',
+    title: '35,000+ leads · Forbes record',
+    category: 'Healthcare · Personal Brand',
+    shortTag: 'HEALTHCARE',
+    year: '2024',
+    variant: 'media',
+    bucket: 'reels',
+    palette: { bg: '#0a2a6e', fg: '#f5f1ea', accent: '#7ad7ff' },
+    composition: {
+      media: { type: 'video', src: '/media/orthopedic.mp4' },
+    },
+  },
+  {
+    id: 'swarnsootra',
+    client: 'Swarnsootra',
+    title: 'Wedding jewelry campaign',
+    category: 'Jewelry · Lifestyle',
+    shortTag: 'JEWELRY',
+    year: '2024',
+    variant: 'media',
+    bucket: 'reels',
+    palette: { bg: '#1f1207', fg: '#fde7c8', accent: '#FFC83D' },
+    composition: {
+      media: { type: 'image', src: '/media/wedd-1.png' },
+    },
+  },
+  {
+    id: 'dr-shubham',
+    client: 'Dr. Shubham',
+    title: 'Personal brand reel · healthcare',
+    category: 'Healthcare · Personal Brand',
+    shortTag: 'PERSONAL',
+    year: '2024',
+    variant: 'media',
+    bucket: 'reels',
+    palette: { bg: '#3a0f1a', fg: '#f9eadd', accent: '#ff8aa6' },
+    composition: {
+      media: { type: 'video', src: '/media/personal-brand.mp4' },
+    },
+  },
+  {
+    id: 'elixzor-media',
+    client: 'Elixzor Media',
+    title: '₹3.2Cr revenue · 10× ROAS',
+    category: 'YouTube · USA',
+    shortTag: 'YOUTUBE',
+    year: '2024',
+    variant: 'media',
+    bucket: 'shorts',
+    palette: { bg: '#1a0533', fg: '#f5f1ea', accent: '#a78bfa' },
+    composition: {
+      media: { type: 'video', src: '/media/cashcow.mp4' },
+    },
+  },
+  {
+    id: 'real-estate-brand',
+    client: 'Real Estate Brand',
+    title: 'Premium property reel',
+    category: 'Real Estate · Lifestyle',
+    shortTag: 'REAL ESTATE',
+    year: '2024',
+    variant: 'media',
+    bucket: 'shorts',
+    palette: { bg: '#1f1207', fg: '#fde7c8', accent: '#FF6B35' },
+    composition: {
+      media: { type: 'video', src: '/media/real-estate.mp4' },
+    },
+  },
+  {
+    id: 'paraiso-comfortwears',
+    client: 'Paraiso Comfortwears',
+    title: '₹33k → ₹3.4L · 30 days',
+    category: 'D2C · Performance',
+    shortTag: 'D2C',
+    year: '2024',
+    variant: 'media',
+    bucket: 'ads',
+    palette: { bg: '#1a0a2e', fg: '#f5f1ea', accent: '#a855f7' },
+    composition: {
+      media: { type: 'video', src: '/media/ad-creative.mp4' },
+    },
+  },
 ]
 
 /** Distinct category tags for the marquee strip. */
