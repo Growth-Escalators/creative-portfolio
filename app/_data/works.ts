@@ -90,6 +90,21 @@ export const WORKS: Work[] = [
   },
 
   /* ── Catalogue (8 cards, 9:16 short-form grid) ── */
+  /* Gary — featured reel, sits at the top of the Reels tab */
+  {
+    id: 'gary',
+    client: 'Gary',
+    title: 'Featured creator reel',
+    category: 'Featured · Personal Brand',
+    shortTag: 'FEATURED',
+    year: '2024',
+    variant: 'media',
+    bucket: 'reels',
+    palette: { bg: '#1a0a2e', fg: '#f5f1ea', accent: '#a855f7' },
+    composition: {
+      media: { type: 'video', src: '/media/gary.mp4' },
+    },
+  },
   {
     id: 'flight-ticket-fare',
     client: 'Flight Ticket Fare',
@@ -188,20 +203,6 @@ export const WORKS: Work[] = [
     palette: { bg: '#0a2a6e', fg: '#f5f1ea', accent: '#7ad7ff' },
     composition: {
       media: { type: 'video', src: '/media/orthopedic.mp4' },
-    },
-  },
-  {
-    id: 'swarnsootra',
-    client: 'Swarnsootra',
-    title: 'Wedding jewelry campaign',
-    category: 'Jewelry · Lifestyle',
-    shortTag: 'JEWELRY',
-    year: '2024',
-    variant: 'media',
-    bucket: 'reels',
-    palette: { bg: '#1f1207', fg: '#fde7c8', accent: '#FFC83D' },
-    composition: {
-      media: { type: 'image', src: '/media/wedd-1.png' },
     },
   },
   {
