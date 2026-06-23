@@ -1,0 +1,310 @@
+/* ──────────────────────── Card shell ──────────────────────── */
+.card {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+
+.canvas {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: var(--w-bg);
+  color: var(--w-fg);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  isolation: isolate;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* Aspect ratios driven by data-attribute on the article */
+.card[data-aspect='16/9'] .canvas { aspect-ratio: 16 / 9; }
+.card[data-aspect='9/16'] .canvas { aspect-ratio: 9 / 16; }
+
+.card:hover .canvas {
+  transform: translateY(-4px);
+  box-shadow:
+    0 20px 50px rgba(139, 92, 246, 0.20),
+    0 4px 14px rgba(0, 0, 0, 0.50);
+}
+
+/* ──────────────────────── Platform badge (Meta/Google/YouTube/TikTok) ──────────────────────── */
+.platformBadge {
+  position: absolute;
+  top: 12px; left: 12px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  background: rgba(10, 10, 10, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.platformDot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--badge-color, #fff);
+  box-shadow: 0 0 6px 1px var(--badge-color, #fff);
+}
+
+/* ──────────────────────── Play button overlay ──────────────────────── */
+.playBtn {
+  position: absolute;
+  z-index: 4;
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.95);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.4s,
+              color 0.4s,
+              box-shadow 0.4s;
+}
+/* Subtle outward pulse ring at rest — signals "media, click me" */
+.playBtn::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.32);
+  animation: playPulse 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes playPulse {
+  0%, 100% { transform: scale(0.88); opacity: 0.55; }
+  50%      { transform: scale(1.18); opacity: 0;    }
+}
+.card:hover .playBtn {
+  transform: scale(1.10);
+  background: var(--cf-orange, #8b5cf6);
+  color: #fff;
+  border-color: rgba(167, 139, 250, 0.55);
+  box-shadow: 0 0 32px 8px rgba(139, 92, 246, 0.65);
+}
+.card:hover .playBtn::after {
+  border-color: rgba(167, 139, 250, 0.65);
+  animation-duration: 1.4s;
+}
+
+/* ──────────────────────── Card number badge (01, 02, …) ──────────────────────── */
+.numberBadge {
+  position: absolute;
+  top: 12px; right: 12px;
+  z-index: 5;
+  min-width: 34px; height: 34px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(10, 10, 14, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  font-size: 11.5px; font-weight: 800; letter-spacing: 0.04em;
+  color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-variant-numeric: tabular-nums;
+  transition: background 0.3s, border-color 0.3s;
+}
+.card:hover .numberBadge {
+  background: rgba(139, 92, 246, 0.85);
+  border-color: rgba(167, 139, 250, 0.55);
+}
+
+/* ──────────────────────── Slide-up hover panel ──────────────────────── */
+.hoverPanel {
+  position: absolute;
+  inset: auto 0 0 0;
+  background: linear-gradient(180deg, rgba(10, 10, 10, 0) 0%, rgba(10, 10, 10, 0.88) 38%, rgba(10, 10, 10, 0.95) 100%);
+  color: #fff;
+  padding: 18px 18px 16px;
+  transform: translateY(40%);
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s;
+  display: flex; flex-direction: column; gap: 4px;
+  pointer-events: none;
+  z-index: 3;
+}
+.card:hover .hoverPanel { transform: translateY(0); opacity: 1; }
+.hoverTagRow {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.55);
+}
+.hoverTag { color: var(--w-accent, #8b5cf6); }
+.hoverTitle {
+  font-size: 15px; font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: #fff;
+  margin: 2px 0 0;
+}
+
+/* ──────────────────────── Variant: initial ──────────────────────── */
+.initial {
+  position: relative;
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.initialLetter {
+  font-family: var(--font-display), serif;
+  font-weight: 900;
+  font-size: 60cqi; /* container-relative — scales nicely across aspect ratios */
+  line-height: 0.78;
+  letter-spacing: -0.06em;
+  color: var(--w-fg);
+  user-select: none;
+  font-style: italic;
+  font-variation-settings: 'opsz' 144, 'SOFT' 30;
+  transform: translateY(0.08em);
+}
+.card[data-aspect='9/16'] .initialLetter { font-size: 70cqi; }
+.card[data-aspect='16/9'] .initialLetter { font-size: 40cqi; }
+
+/* ──────────────────────── Variant: mark ──────────────────────── */
+.markWrap {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  padding: 18%;
+}
+.markSvg {
+  width: 100%; height: 100%;
+  max-width: 60cqi; max-height: 60cqi;
+}
+
+/* ──────────────────────── Variant: field ──────────────────────── */
+.field {
+  position: relative;
+  width: 100%; height: 100%;
+  padding: 8% 9%;
+  display: flex; flex-direction: column;
+  justify-content: center;
+}
+.fieldLines { display: flex; flex-direction: column; gap: 4px; }
+.fieldLine {
+  font-family: var(--font-display), serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 9cqi;
+  line-height: 1.02;
+  color: var(--w-fg);
+  letter-spacing: -0.02em;
+}
+
+/* ──────────────────────── Variant: poster ──────────────────────── */
+.poster {
+  position: relative;
+  width: 100%; height: 100%;
+  padding: 8% 8%;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.posterStack {
+  display: flex; flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+.posterWord {
+  font-family: var(--font-display), serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 14cqi;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  color: var(--w-fg);
+}
+.posterWord:nth-child(odd) { color: var(--w-accent); }
+
+/* ──────────────────────── Variant: media (real video or image) ──────────────────────── */
+.media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+.mediaEl {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card:hover .mediaEl { transform: scale(1.04); }
+
+/* On media-variant cards, dim the play button at rest and brighten on hover
+   so the video frame reads as the hero (not the button) */
+.card:has(.media) .playBtn {
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* ──────────────────────── Variant: spec ──────────────────────── */
+.spec {
+  width: 100%; height: 100%;
+  padding: 9% 8%;
+  display: flex; flex-direction: column;
+  gap: 12px;
+  font-family: var(--font-jakarta), sans-serif;
+  color: var(--w-fg);
+}
+.specHeader {
+  display: flex; justify-content: space-between;
+  font-size: 3.4cqi; letter-spacing: 0.3em;
+  font-weight: 800;
+  color: var(--w-fg);
+  opacity: 0.7;
+}
+.specRows {
+  list-style: none; padding: 0; margin: 0;
+  flex: 1;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  gap: 3.5cqi;
+}
+.specRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+}
+.specKey {
+  font-size: 3.2cqi;
+  letter-spacing: 0.24em;
+  color: var(--w-fg);
+  opacity: 0.7;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.specVal {
+  font-family: var(--font-display), serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 5cqi;
+  letter-spacing: -0.01em;
+  color: var(--w-accent);
+}
+
+/* container queries depend on canvas being a container */
+.canvas { container-type: size; }
