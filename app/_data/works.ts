@@ -1,4 +1,5 @@
 export type WorkVariant = 'initial' | 'mark' | 'field' | 'poster' | 'spec' | 'media'
+export type WorkBucket = 'reels' | 'shorts' | 'ads'
 
 export type Work = {
   id: string
@@ -22,6 +23,8 @@ export type Work = {
     media?: { type: 'video' | 'image'; src: string }
   }
   shortTag: string
+  /** Which short-form filter bucket this belongs to (reels / shorts / ads). */
+  bucket?: WorkBucket
   featured?: { col: number; row: number }
 }
 
@@ -88,19 +91,6 @@ export const WORKS: Work[] = [
 
   /* ── Catalogue (8 cards, 9:16 short-form grid) ── */
   {
-    id: 'yellow-diaries',
-    client: 'Yellow Diaries',
-    title: '0 → 12K followers in 5 months',
-    category: 'Brand · Café',
-    shortTag: 'BRAND',
-    year: '2024',
-    variant: 'media',
-    palette: { bg: '#f7e35b', fg: '#0a0a0a', accent: '#FF6B35' },
-    composition: {
-      media: { type: 'image', src: '/media/wedd-1.png' },
-    },
-  },
-  {
     id: 'flight-ticket-fare',
     client: 'Flight Ticket Fare',
     title: 'CPL dropped 75%',
@@ -108,6 +98,7 @@ export const WORKS: Work[] = [
     shortTag: 'FUNNEL',
     year: '2024',
     variant: 'media',
+    bucket: 'shorts',
     palette: { bg: '#0d1330', fg: '#dde9ff', accent: '#7ad7ff' },
     composition: {
       media: { type: 'video', src: '/media/destination.mp4' },
@@ -121,22 +112,10 @@ export const WORKS: Work[] = [
     shortTag: 'D2C',
     year: '2024',
     variant: 'media',
+    bucket: 'ads',
     palette: { bg: '#1a1a2e', fg: '#f5f1ea', accent: '#FF6B35' },
     composition: {
       media: { type: 'video', src: '/media/product-ad.mp4' },
-    },
-  },
-  {
-    id: 'dr-mukesh',
-    client: 'Dr. Mukesh',
-    title: '12 inbound consults / month',
-    category: 'Healthcare · Personal Brand',
-    shortTag: 'PERSONAL',
-    year: '2024',
-    variant: 'media',
-    palette: { bg: '#3a0f1a', fg: '#f9eadd', accent: '#ff8aa6' },
-    composition: {
-      media: { type: 'video', src: '/media/personal-brand.mp4' },
     },
   },
   {
@@ -147,6 +126,7 @@ export const WORKS: Work[] = [
     shortTag: 'B2B',
     year: '2024',
     variant: 'media',
+    bucket: 'ads',
     palette: { bg: '#2d1500', fg: '#f5f1ea', accent: '#ff9554' },
     composition: {
       media: { type: 'video', src: '/media/promo.mp4' },
@@ -160,6 +140,7 @@ export const WORKS: Work[] = [
     shortTag: 'COMMERCE',
     year: '2024',
     variant: 'media',
+    bucket: 'ads',
     palette: { bg: '#0f3020', fg: '#dffbe4', accent: '#22c55e' },
     composition: {
       media: { type: 'image', src: '/media/odra-formula.png' },
@@ -173,6 +154,7 @@ export const WORKS: Work[] = [
     shortTag: 'CONSULT',
     year: '2024',
     variant: 'media',
+    bucket: 'reels',
     palette: { bg: '#0c1a2e', fg: '#dbeafe', accent: '#3b82f6' },
     composition: {
       media: { type: 'image', src: '/media/studio.jpg' },
@@ -186,6 +168,7 @@ export const WORKS: Work[] = [
     shortTag: 'WEB',
     year: '2024',
     variant: 'media',
+    bucket: 'shorts',
     palette: { bg: '#0d0d0d', fg: '#e2dffc', accent: '#a78bfa' },
     composition: {
       media: { type: 'video', src: '/media/visualizer.mp4' },

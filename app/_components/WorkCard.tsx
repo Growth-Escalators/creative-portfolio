@@ -24,21 +24,32 @@ type Props = {
   aspect?: Aspect
   /** Optional platform badge in the top-left corner (e.g. "Meta", "YouTube"). */
   platform?: Platform
+  /** Fires when the card is clicked. When set, the card becomes a button-ish surface
+      (cursor: pointer, keyboard-activatable). Used to open the lightbox. */
+  onClick?: () => void
   index?: number
 }
 
-export default function WorkCard({ work, aspect = '1/1', platform, index = 0 }: Props) {
+export default function WorkCard({ work, aspect = '1/1', platform, onClick, index = 0 }: Props) {
   const { palette, variant } = work
+  const clickable = Boolean(onClick)
 
   return (
     <motion.article
       className={styles.card}
       data-aspect={aspect}
+      onClick={onClick}
+      onKeyDown={onClick ? (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick() }
+      } : undefined}
+      role={clickable ? 'button' : undefined}
+      tabIndex={clickable ? 0 : undefined}
       style={
         {
           '--w-bg': palette.bg,
           '--w-fg': palette.fg,
           '--w-accent': palette.accent,
+          ...(clickable ? { cursor: 'pointer' } : null),
         } as React.CSSProperties
       }
       initial={{ opacity: 0, y: 20, scale: 0.97 }}

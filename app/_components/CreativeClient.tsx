@@ -4,8 +4,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { motion, useInView, useReducedMotion } from 'framer-motion'
 import { ArrowRight, ArrowUpRight, Play } from 'lucide-react'
 
-import { WORKS } from '../_data/works'
+import { WORKS, type WorkBucket } from '../_data/works'
 import WorkCard from './WorkCard'
+import VideoModal from './VideoModal'
 import styles from './CreativeClient.module.css'
 
 const easeOut = [0.16, 1, 0.3, 1] as const
@@ -22,7 +23,7 @@ const INDUSTRIES = [
   'E-Commerce', 'Coaches & Creators',
 ]
 
-/* ─────────── Data: services — Video Production + Creative Ads ─────────── */
+/* ─────────── Data: services — Video Editing + Creative Ads ─────────── */
 const SERVICES = [
   {
     title: 'Creative Ads',
@@ -35,8 +36,8 @@ const SERVICES = [
     tags: ['Meta Ads', 'Google Ads', 'YouTube Ads', 'TikTok', 'UGC'],
   },
   {
-    title: 'Video Production',
-    body: 'Long-form and short-form video that builds the brand while it builds the audience.',
+    title: 'Video Editing',
+    body: 'Long-form and short-form edits that build the brand while they build the audience.',
     bullets: [
       'Long-form YouTube videos & brand films',
       'Shorts · Reels · TikTok cuts in volume',
@@ -56,12 +57,10 @@ const GALLERY = [
   { src: '/media/odra-glow.png', client: 'Odra Organics',  category: 'Wellness · Post', badge: 'Social' },
 ]
 
-/* ─────────── Real impact stats — from the main site's STATS_EXTENDED + clients.js ─────────── */
+/* ─────────── Real impact stats — pared down to the 2 most credible numbers ─────────── */
 const IMPACT_STATS = [
-  { num: 10000, suffix: '+',  label: 'Campaigns delivered' },
-  { num: 187,   suffix: '+',  label: 'Brands scaled' },
-  { num: 97,    suffix: '%',  label: 'Client retention' },
-  { num: 20,    suffix: 'M+', label: 'Reach generated' },
+  { num: 187, suffix: '+',  label: 'Brands scaled' },
+  { num: 20,  suffix: 'M+', label: 'Reach generated' },
 ]
 
 /* Animated number — counts 0 → end on scroll into view. */
@@ -97,19 +96,26 @@ const SHORT_FORM_PLATFORMS: Record<string, 'Meta' | 'Google' | 'YouTube' | 'TikT
   'ananya-studio':  'Meta',
 }
 
-/* ─────────── Real testimonials — sourced from main-site Google reviews ─────────── */
+/* ─────────── Testimonials — first two are real on-camera video clients
+   (Plysolene + Dr. Balram Harsana). The rest are text Google reviews
+   sourced from the main site's testimonials.js. We do NOT put words in
+   the video clients' mouths — copy is a neutral "watch the story" CTA. */
 const TESTIMONIALS = [
   {
-    quote: 'Has been fantastic to work with. Consistently strong results, with noticeable improvements in traffic and conversions. Knowledgeable, responsive, and truly invested in the success of their clients.',
-    name: 'Muaaz Shaikh',
-    role: 'Google Review · ★★★★★',
+    quote: "Hear Plysolene's full story — straight from the client, in their own words. Tap play for the unedited testimonial.",
+    name: 'Plysolene',
+    role: 'Video Testimonial · Press play',
     gradient: 'linear-gradient(135deg, #FF6B35, #FF8C5A)',
+    youtubeId: 'Yi5enK4yrJM',
+    isShort: false,
   },
   {
-    quote: 'Excellent service. From the initial consultation to the final launch, the team was incredibly professional and attentive to every detail. Highly recommend!',
-    name: 'Richa Jain',
-    role: 'Google Review · ★★★★★',
+    quote: "Dr. Balram Harsana on the work we did together — on camera, in his own words. Tap play to watch.",
+    name: 'Dr. Balram Harsana',
+    role: 'Video Review · Press play',
     gradient: 'linear-gradient(135deg, #6C63FF, #9c8fff)',
+    youtubeId: 'Hzff2yAJ_UA',
+    isShort: true,
   },
   {
     quote: 'Excellent affordable service. The team delivered exactly what was promised — on time and within budget. Very impressed with the quality and professionalism.',
@@ -137,12 +143,44 @@ const TESTIMONIALS = [
   },
 ]
 
+type TabKey = WorkBucket
+const TABS: { key: TabKey; label: string }[] = [
+  { key: 'reels',  label: 'Reels'      },
+  { key: 'shorts', label: 'Shorts'     },
+  { key: 'ads',    label: 'Ad Creative'},
+]
+
 export default function CreativeClient() {
   const prefersReduced = useReducedMotion()
 
   // Split works for the long-form (16:9, 4 pieces) and short-form (9:16, rest) grids.
   const longFormWorks  = useMemo(() => WORKS.slice(0, 4), [])
   const shortFormWorks = useMemo(() => WORKS.slice(4),    [])
+
+  /* Short-form filter — counts per bucket + currently active tab.
+     Default opens on whichever bucket has the most cards so the section
+     doesn't render thin on first load. */
+  const bucketCounts = useMemo(() => {
+    const c: Record<WorkBucket, number> = { reels: 0, shorts: 0, ads: 0 }
+    shortFormWorks.forEach((w) => { if (w.bucket) c[w.bucket]++ })
+    return c
+  }, [shortFormWorks])
+  const defaultTab = useMemo<TabKey>(() => {
+    return (Object.entries(bucketCounts) as [WorkBucket, number][])
+      .sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'reels'
+  }, [bucketCounts])
+  const [activeTab, setActiveTab] = useState<TabKey>(defaultTab)
+  const filteredShortForm = useMemo(
+    () => shortFormWorks.filter((w) => w.bucket === activeTab),
+    [shortFormWorks, activeTab]
+  )
+
+  /* Lightbox state — null when closed, an object describing the asset when open.
+     For YouTube, `src` is the video ID (not a full URL) and `isShort` controls aspect. */
+  const [lightbox, setLightbox] = useState<
+    | { src: string; type: 'video' | 'image' | 'youtube'; title: string; caption?: string; isShort?: boolean }
+    | null
+  >(null)
 
   /* Testimonials carousel — scroll one card-width on "next" */
   const carouselRef = useRef<HTMLDivElement>(null)
@@ -299,27 +337,6 @@ export default function CreativeClient() {
       {/* ─────────── HERO ─────────── */}
       <section className={styles.hero} ref={heroRef}>
         <div className={styles.heroInner}>
-          <motion.span
-            className={styles.heroAvailable}
-            initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: easeOut }}
-          >
-            <span className={styles.heroAvailableDot} aria-hidden />
-            Available for Q3 2026 projects
-          </motion.span>
-
-          <motion.div
-            className={styles.heroAvatars}
-            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.05, ease: easeOut }}
-          >
-            <span className={styles.heroAvatarStack}>
-              <span className={styles.heroAvatar} style={{ background: 'linear-gradient(135deg,#a855f7,#6d28d9)' }}>P</span>
-              <span className={styles.heroAvatar} style={{ background: 'linear-gradient(135deg,#FFC83D,#FF6B35)' }}>Y</span>
-              <span className={styles.heroAvatar} style={{ background: 'linear-gradient(135deg,#7ad7ff,#2563eb)' }}>D</span>
-            </span>
-            <span className={styles.heroAvatarText}>Loved by creators worldwide!</span>
-          </motion.div>
 
           <motion.h1
             className={styles.heroTitle}
@@ -356,15 +373,15 @@ export default function CreativeClient() {
             transition={{ duration: 0.8, delay: 0.55, ease: easeOut }}
           >
             <div className={styles.heroTrustItem}>
-              <span className={styles.heroTrustNum}>4.9★</span>
+              <span className={styles.heroTrustNum}>4.9<span>★</span></span>
               <span className={styles.heroTrustLabel}>Google Rating</span>
             </div>
             <div className={styles.heroTrustItem}>
-              <span className={styles.heroTrustNum}>187+</span>
+              <span className={styles.heroTrustNum}>187<span>+</span></span>
               <span className={styles.heroTrustLabel}>Brands Scaled</span>
             </div>
             <div className={styles.heroTrustItem}>
-              <span className={styles.heroTrustNum}>10K+</span>
+              <span className={styles.heroTrustNum}>10K<span>+</span></span>
               <span className={styles.heroTrustLabel}>Campaigns Live</span>
             </div>
           </motion.div>
@@ -417,9 +434,10 @@ export default function CreativeClient() {
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.7, ease: easeOut }}
         >
-          A creative studio focused on returns. We build ad creative and video that earns
-          attention, holds it, and pays for itself — break free of the brief-template trap
-          and take the brand to the next level.
+          I create thumb-stopping creative — reels, ads &amp; short-form video built
+          to hook in the first three seconds and convert in the next thirty.
+          No template briefs, no safe copy — just work that earns the scroll-stop,
+          the click, and the sale.
         </motion.p>
         <a href="#work" className={styles.btnPrimary}>see the work</a>
       </section>
@@ -435,16 +453,44 @@ export default function CreativeClient() {
           Hooks built for retention, ends built for the action.
         </p>
       </div>
+      {/* Filter tabs — All / Reels / Shorts / Ad Creative */}
+      <div className={styles.tabsWrap}>
+        <div className={styles.tabs} role="tablist" aria-label="Filter short-form work">
+          {TABS.map((t) => (
+            <button
+              key={t.key}
+              role="tab"
+              type="button"
+              aria-selected={activeTab === t.key}
+              className={`${styles.tab} ${activeTab === t.key ? styles.tabActive : ''}`}
+              onClick={() => setActiveTab(t.key)}
+            >
+              {t.label}
+              <span className={styles.tabCount}>{bucketCounts[t.key]}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className={styles.shortGrid}>
-        {shortFormWorks.map((w, i) => (
-          <WorkCard
-            key={w.id}
-            work={w}
-            aspect="9/16"
-            index={i}
-            platform={SHORT_FORM_PLATFORMS[w.id]}
-          />
-        ))}
+        {filteredShortForm.map((w, i) => {
+          const media = w.composition.media
+          return (
+            <WorkCard
+              key={w.id}
+              work={w}
+              aspect="9/16"
+              index={i}
+              platform={SHORT_FORM_PLATFORMS[w.id]}
+              onClick={media ? () => setLightbox({
+                src: media.src,
+                type: media.type,
+                title: w.client,
+                caption: w.title,
+              }) : undefined}
+            />
+          )
+        })}
       </div>
 
       {/* ─────────── Manifesto / transition band — bridges video → static ─────────── */}
@@ -535,24 +581,7 @@ export default function CreativeClient() {
         </div>
       </section>
 
-      {/* ─────────── Long-form video & brand films (2×2 of 16:9) ─────────── */}
-      <div className={styles.sectionHead}>
-        <span className={styles.tag}>Long-form Video</span>
-        <h2 className={styles.sectionTitle}>
-          Long-form &amp; brand <em>films.</em>
-        </h2>
-        <p className={styles.sectionSub}>
-          YouTube videos, brand films and podcast cuts — long enough to build belief,
-          tight enough to keep the audience to the end.
-        </p>
-      </div>
-      <div className={styles.longGrid}>
-        {longFormWorks.map((w, i) => (
-          <WorkCard key={w.id} work={w} aspect="16/9" index={i} />
-        ))}
-      </div>
-
-      {/* ─────────── Impact Numbers — dark band, count-up stats ─────────── */}
+      {/* ─────────── Impact Numbers — dark band, count-up stats (2-up) ─────────── */}
       <section className={styles.impact}>
         <div className={styles.impactInner}>
           <div className={styles.impactHead}>
@@ -574,7 +603,7 @@ export default function CreativeClient() {
         </div>
       </section>
 
-      {/* ─────────── Services — Creative Ads + Video Production ─────────── */}
+      {/* ─────────── Services — Creative Ads + Video Editing ─────────── */}
       <section className={styles.servicesSection}>
         <div className={styles.sectionHead} style={{ padding: '0 0 32px' }}>
           <span className={styles.tag}>What we do</span>
@@ -623,34 +652,64 @@ export default function CreativeClient() {
 
         <div className={styles.carouselOuter}>
           <div className={styles.carouselTrack} ref={carouselRef} aria-label="Client testimonials">
-            {TESTIMONIALS.map((t) => (
-              <motion.article
-                key={t.name}
-                className={styles.bigCard}
-                initial={{ opacity: 0, y: 22 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-40px' }}
-                transition={{ duration: 0.55, ease: easeOut }}
-              >
-                <div className={styles.bigCardCopy}>
-                  <p className={styles.bigQuote}>{t.quote}</p>
-                  <div>
-                    <div className={styles.bigName}>{t.name}</div>
-                    <div className={styles.bigRole}>{t.role}</div>
-                  </div>
-                </div>
-                <div
-                  className={styles.bigVideo}
-                  style={{ background: t.gradient }}
-                  aria-hidden
+            {TESTIMONIALS.map((t) => {
+              const hasYt = Boolean(t.youtubeId)
+              const openYt = hasYt
+                ? () => setLightbox({
+                    type: 'youtube',
+                    src: t.youtubeId!,
+                    title: t.name,
+                    caption: t.role,
+                    isShort: t.isShort,
+                  })
+                : undefined
+              return (
+                <motion.article
+                  key={t.name}
+                  className={styles.bigCard}
+                  initial={{ opacity: 0, y: 22 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-40px' }}
+                  transition={{ duration: 0.55, ease: easeOut }}
                 >
-                  <span className={styles.bigVideoInitials}>{t.name[0]}</span>
-                  <span className={styles.bigVideoPlay}>
-                    <Play size={22} fill="currentColor" strokeWidth={0} style={{ marginLeft: 3 }} />
-                  </span>
-                </div>
-              </motion.article>
-            ))}
+                  <div className={styles.bigCardCopy}>
+                    <p className={styles.bigQuote}>{t.quote}</p>
+                    <div>
+                      <div className={styles.bigName}>{t.name}</div>
+                      <div className={styles.bigRole}>{t.role}</div>
+                    </div>
+                  </div>
+                  <div
+                    className={styles.bigVideo}
+                    style={{
+                      background: t.gradient,
+                      ...(hasYt ? { cursor: 'pointer' } : null),
+                    }}
+                    onClick={openYt}
+                    onKeyDown={hasYt ? (e) => {
+                      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openYt!() }
+                    } : undefined}
+                    role={hasYt ? 'button' : undefined}
+                    tabIndex={hasYt ? 0 : undefined}
+                    aria-label={hasYt ? `Play ${t.name}'s video testimonial` : undefined}
+                  >
+                    {hasYt ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={`https://i.ytimg.com/vi/${t.youtubeId}/hqdefault.jpg`}
+                        alt={`${t.name} video testimonial`}
+                        className={styles.bigVideoThumb}
+                      />
+                    ) : (
+                      <span className={styles.bigVideoInitials}>{t.name[0]}</span>
+                    )}
+                    <span className={styles.bigVideoPlay}>
+                      <Play size={22} fill="currentColor" strokeWidth={0} style={{ marginLeft: 3 }} />
+                    </span>
+                  </div>
+                </motion.article>
+              )
+            })}
           </div>
 
           <button
@@ -683,6 +742,17 @@ export default function CreativeClient() {
           </a>
         </div>
       </section>
+
+      {/* ─────────── Lightbox — only mounted when a card has been clicked ─────────── */}
+      {lightbox && (
+        <VideoModal
+          src={lightbox.src}
+          type={lightbox.type}
+          title={lightbox.title}
+          caption={lightbox.caption}
+          onClose={() => setLightbox(null)}
+        />
+      )}
     </div>
   )
 }
