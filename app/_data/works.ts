@@ -1,5 +1,5 @@
 export type WorkVariant = 'initial' | 'mark' | 'field' | 'poster' | 'spec' | 'media'
-export type WorkBucket = 'reels' | 'shorts' | 'ads'
+export type WorkBucket = 'ads' | 'reels' | 'long'
 
 export type Work = {
   id: string
@@ -113,7 +113,7 @@ export const WORKS: Work[] = [
     shortTag: 'FUNNEL',
     year: '2024',
     variant: 'media',
-    bucket: 'shorts',
+    bucket: 'reels',
     palette: { bg: '#0d1330', fg: '#dde9ff', accent: '#7ad7ff' },
     composition: {
       media: { type: 'video', src: '/media/destination.mp4' },
@@ -162,15 +162,15 @@ export const WORKS: Work[] = [
     },
   },
   {
-    id: 'gentle-panda',
-    client: 'Gentle Panda',
-    title: 'Brand consultancy + GTM',
-    category: 'Baby · Kids',
-    shortTag: 'CONSULT',
+    id: 'odra-organics-reel',
+    client: 'Odra Organics',
+    title: '20M+ Instagram reach',
+    category: 'Wellness · Social',
+    shortTag: 'SOCIAL',
     year: '2024',
     variant: 'media',
     bucket: 'reels',
-    palette: { bg: '#0c1a2e', fg: '#dbeafe', accent: '#3b82f6' },
+    palette: { bg: '#166534', fg: '#dffbe4', accent: '#4ade80' },
     composition: {
       media: { type: 'image', src: '/media/studio.jpg' },
     },
@@ -183,7 +183,7 @@ export const WORKS: Work[] = [
     shortTag: 'WEB',
     year: '2024',
     variant: 'media',
-    bucket: 'shorts',
+    bucket: 'reels',
     palette: { bg: '#0d0d0d', fg: '#e2dffc', accent: '#a78bfa' },
     composition: {
       media: { type: 'video', src: '/media/visualizer.mp4' },
@@ -195,28 +195,14 @@ export const WORKS: Work[] = [
     id: 'dr-dheeraj-dubay',
     client: 'Dr. Dheeraj Dubay',
     title: '35,000+ leads · Forbes record',
-    category: 'Healthcare · Personal Brand',
+    category: 'Healthcare · Long-form',
     shortTag: 'HEALTHCARE',
     year: '2024',
     variant: 'media',
-    bucket: 'reels',
+    bucket: 'long',
     palette: { bg: '#0a2a6e', fg: '#f5f1ea', accent: '#7ad7ff' },
     composition: {
       media: { type: 'video', src: '/media/orthopedic.mp4' },
-    },
-  },
-  {
-    id: 'dr-shubham',
-    client: 'Dr. Shubham',
-    title: 'Personal brand reel · healthcare',
-    category: 'Healthcare · Personal Brand',
-    shortTag: 'PERSONAL',
-    year: '2024',
-    variant: 'media',
-    bucket: 'reels',
-    palette: { bg: '#3a0f1a', fg: '#f9eadd', accent: '#ff8aa6' },
-    composition: {
-      media: { type: 'video', src: '/media/personal-brand.mp4' },
     },
   },
   {
@@ -227,7 +213,7 @@ export const WORKS: Work[] = [
     shortTag: 'YOUTUBE',
     year: '2024',
     variant: 'media',
-    bucket: 'shorts',
+    bucket: 'long',
     palette: { bg: '#1a0533', fg: '#f5f1ea', accent: '#a78bfa' },
     composition: {
       media: { type: 'video', src: '/media/cashcow.mp4' },
@@ -241,7 +227,7 @@ export const WORKS: Work[] = [
     shortTag: 'REAL ESTATE',
     year: '2024',
     variant: 'media',
-    bucket: 'shorts',
+    bucket: 'long',
     palette: { bg: '#1f1207', fg: '#fde7c8', accent: '#FF6B35' },
     composition: {
       media: { type: 'video', src: '/media/real-estate.mp4' },
@@ -255,7 +241,7 @@ export const WORKS: Work[] = [
     shortTag: 'D2C',
     year: '2024',
     variant: 'media',
-    bucket: 'ads',
+    bucket: 'long',
     palette: { bg: '#1a0a2e', fg: '#f5f1ea', accent: '#a855f7' },
     composition: {
       media: { type: 'video', src: '/media/ad-creative.mp4' },

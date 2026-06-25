@@ -145,9 +145,9 @@ const TESTIMONIALS = [
 
 type TabKey = WorkBucket
 const TABS: { key: TabKey; label: string }[] = [
-  { key: 'reels',  label: 'Reels'      },
-  { key: 'shorts', label: 'Shorts'     },
-  { key: 'ads',    label: 'Ad Creative'},
+  { key: 'ads',   label: 'Ad Creative'},
+  { key: 'reels', label: 'Reels'      },
+  { key: 'long',  label: 'Long Video' },
 ]
 
 /** Google Drive folder holding the full portfolio archive — wired to the
@@ -165,7 +165,7 @@ export default function CreativeClient() {
      Default opens on whichever bucket has the most cards so the section
      doesn't render thin on first load. */
   const bucketCounts = useMemo(() => {
-    const c: Record<WorkBucket, number> = { reels: 0, shorts: 0, ads: 0 }
+    const c: Record<WorkBucket, number> = { ads: 0, reels: 0, long: 0 }
     shortFormWorks.forEach((w) => { if (w.bucket) c[w.bucket]++ })
     return c
   }, [shortFormWorks])
@@ -341,7 +341,6 @@ export default function CreativeClient() {
               className={styles.brandLogo}
             />
           </a>
-          <span className={styles.topBarMeta}>Vol. 01 · 2026</span>
         </div>
       </header>
 
@@ -362,7 +361,7 @@ export default function CreativeClient() {
             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.25, ease: easeOut }}
           >
-            A creative studio for personal brands and growing businesses —
+            An independent creative for personal brands and growing creators —
             building <strong style={{ color: 'var(--cf-fg)' }}>scroll-stopping ad creative</strong> and{' '}
             <strong style={{ color: 'var(--cf-fg)' }}>video content</strong> that earns the click
             and moves the metric.
@@ -453,14 +452,14 @@ export default function CreativeClient() {
         <a href="#work" className={styles.btnPrimary}>see the work</a>
       </section>
 
-      {/* ─────────── Short-form & ad creative (4-col of 9:16) — shown first ─────────── */}
+      {/* ─────────── Ad creative · Reels · Long video ─────────── */}
       <div id="work" className={styles.sectionHead}>
-        <span className={styles.tag}>Short-form &amp; Ad Creative</span>
+        <span className={styles.tag}>Ad Creative · Reels · Long Video</span>
         <h2 className={styles.sectionTitle}>
-          Reels, Shorts &amp; ad <em>creative.</em>
+          Ad creative, reels &amp; long <em>video.</em>
         </h2>
         <p className={styles.sectionSub}>
-          Vertical video for paid &amp; organic — Meta, Google, YouTube Shorts, TikTok &amp; Reels.
+          Paid &amp; organic video work — Meta, Google, YouTube, TikTok &amp; Reels.
           Hooks built for retention, ends built for the action.
         </p>
       </div>
@@ -483,14 +482,14 @@ export default function CreativeClient() {
         </div>
       </div>
 
-      <div className={styles.shortGrid}>
+      <div className={activeTab === 'long' ? styles.longGrid : styles.shortGrid}>
         {filteredShortForm.map((w, i) => {
           const media = w.composition.media
           return (
             <WorkCard
               key={w.id}
               work={w}
-              aspect="9/16"
+              aspect={activeTab === 'long' ? '16/9' : '9/16'}
               index={i}
               platform={SHORT_FORM_PLATFORMS[w.id]}
               onClick={media ? () => setLightbox({
@@ -504,18 +503,6 @@ export default function CreativeClient() {
         })}
       </div>
 
-      {/* View More — opens the full Drive archive in a new tab */}
-      <div className={styles.viewMoreWrap}>
-        <a
-          href={VIEW_MORE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.viewMoreBtn}
-        >
-          View More on Drive
-          <ArrowUpRight size={16} strokeWidth={2.5} />
-        </a>
-      </div>
 
       {/* ─────────── Manifesto / transition band — bridges video → static ─────────── */}
       <section className={styles.manifesto} aria-label="Manifesto">
