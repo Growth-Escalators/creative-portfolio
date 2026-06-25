@@ -128,21 +128,39 @@
 .topBarInner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 14px clamp(20px, 4vw, 40px);
+  padding: 8px clamp(20px, 4vw, 40px);
   display: flex; align-items: center; justify-content: space-between;
 }
 .brandMark {
-  font-weight: 900;
-  font-size: 20px;
-  letter-spacing: -0.04em;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
   color: var(--cf-fg);
-  display: inline-flex; align-items: center; gap: 8px;
+  height: 104px;
+  overflow: visible;
+  transition: opacity 0.25s, transform 0.25s;
 }
-.brandMark::before {
-  content: ''; display: inline-block;
-  width: 10px; height: 10px; border-radius: 50%;
-  background: var(--cf-orange);
-  box-shadow: 0 0 12px 2px rgba(139, 92, 246, 0.6);
+.brandLogo {
+  height: 100%;
+  width: auto;
+  display: block;
+  /* Convert the source PNG (violet A + black text on white) to a clean
+     white silhouette so it reads on the dark navbar without a hard
+     white tile around it. Brand violet still lives in every accent + glow
+     elsewhere on the page.
+     translateY shifts the mark down a touch so the optical center of the
+     glyph sits visually centered (the source PNG has more whitespace
+     above the artwork than below). */
+  filter: brightness(0) invert(1) drop-shadow(0 0 20px rgba(139, 92, 246, 0.48));
+  opacity: 0.96;
+  transform: scale(1.95) translateY(6%);
+  transform-origin: left center;
+  transition: opacity 0.25s, transform 0.25s, filter 0.25s;
+}
+.brandMark:hover .brandLogo {
+  opacity: 1;
+  transform: scale(2.05) translateY(6%);
+  filter: brightness(0) invert(1) drop-shadow(0 0 28px rgba(167, 139, 250, 0.75));
 }
 .topBarMeta {
   font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
@@ -1382,8 +1400,8 @@
    stack remaining grids, hide hover-only chrome on touch devices.
    ───────────────────────────────────────────────────────────────── */
 @media (max-width: 720px) {
-  .topBarInner { padding: 11px 16px; }
-  .brandMark { font-size: 17px; }
+  .topBarInner { padding: 6px 14px; }
+  .brandMark { height: 76px; }
   .topBarMeta { font-size: 9.5px; letter-spacing: 0.22em; }
 
   /* Section heads tighter on mobile */

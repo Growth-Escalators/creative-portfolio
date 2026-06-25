@@ -333,7 +333,14 @@ export default function CreativeClient() {
       {/* ─────────── Top bar ─────────── */}
       <header className={styles.topBar}>
         <div className={styles.topBarInner}>
-          <span className={styles.brandMark}>Folio</span>
+          <a href="#top" className={styles.brandMark} aria-label="Creative Spark">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/brand/logo.png"
+              alt="Creative Spark"
+              className={styles.brandLogo}
+            />
+          </a>
           <span className={styles.topBarMeta}>Vol. 01 · 2026</span>
         </div>
       </header>
